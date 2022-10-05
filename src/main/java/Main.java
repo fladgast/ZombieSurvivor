@@ -101,7 +101,7 @@ public class Main {
                 }
                 case Character -> {
                     if (keyStroke.getCharacter() == ' ' && direction != null) {
-                        score = fireLaser(terminal, playerPosition, direction, zombies, score);
+                        score = fireLaser(terminal, playerPosition, direction, zombies, score, maze.blockPositions);
                     }
                 }
             }
@@ -174,7 +174,7 @@ public class Main {
             terminal.flush();
         }
     }
-    static int fireLaser(Terminal terminal, Position playerPosition, KeyType direction, ArrayList<Zombie> zombiePositions, int score) throws IOException, InterruptedException {
+    static int fireLaser(Terminal terminal, Position playerPosition, KeyType direction, ArrayList<Zombie> zombiePositions, int score, ArrayList<Position> blockPositions) throws IOException, InterruptedException {
         int x = playerPosition.getX();
         int y = playerPosition.getY();
         final char horizontalLine = '\u23AF';
@@ -184,6 +184,9 @@ public class Main {
                 while (true) {
                     if (zombieHit(x, y, terminal, zombiePositions)) {
                         score++;
+                        break;
+                    }
+                    if (wallHit(x, y, terminal, blockPositions)) {
                         break;
                     }
                     x--;
@@ -207,6 +210,9 @@ public class Main {
                         score++;
                         break;
                     }
+                    if (wallHit(x, y, terminal, blockPositions)) {
+                        break;
+                    }
                     x++;
                     if (x > 100) {
                         break;
@@ -228,6 +234,9 @@ public class Main {
                         score++;
                         break;
                     }
+                    if (wallHit(x, y, terminal, blockPositions)) {
+                        break;
+                    }
                     y--;
                     if (y < 0) {
                         break;
@@ -247,6 +256,9 @@ public class Main {
                 while (true) {
                     if (zombieHit(x, y, terminal, zombiePositions)) {
                         score++;
+                        break;
+                    }
+                    if (wallHit(x, y, terminal, blockPositions)) {
                         break;
                     }
                     y++;
@@ -284,5 +296,16 @@ public class Main {
         zombies.add(zombie);
         terminal.setCursorPosition(zombie.position.getX(), zombie.position.getY());
         terminal.putCharacter(zombie.zombie);
+    }
+    static boolean wallHit(int x, int y, Terminal terminal, ArrayList<Position> blockPositions) throws IOException {
+        for (int i = 0; i < blockPositions.size(); i++) {
+            if (x == blockPositions.get(i).getX() && y == blockPositions.get(i).getY()) {
+                terminal.setCursorPosition(x, y);
+                terminal.putCharacter(' ');
+                blockPositions.remove(i);
+                return true;
+            }
+        }
+        return false;
     }
 }
