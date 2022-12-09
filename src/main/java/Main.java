@@ -1,3 +1,4 @@
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -21,10 +22,7 @@ public class Main {
 
         Maze maze = new Maze();
         maze.buildMaze();
-//        maze.buildOuterWalls();
-//
-//
-//
+
         for (Position blockPosition : maze.blockPositions) {
             terminal.setCursorPosition(blockPosition.getX(), blockPosition.getY());
             terminal.putCharacter(maze.block);
